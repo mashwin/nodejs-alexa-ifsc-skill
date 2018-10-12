@@ -21,10 +21,9 @@ const InProgressIfscCodeIntentHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
             handlerInput.requestEnvelope.request.intent.name === 'ifscCode' &&
-            handlerInput.requestEnvelope.request.dialogState !== 'COMPLETED'         
+            handlerInput.requestEnvelope.request.dialogState !== 'COMPLETED'
     },
     handle(handlerInput) {
-        console.log('in progress intent handler', handlerInput.requestEnvelope.request.dialogState);
         const currentIntent = handlerInput.requestEnvelope.request.intent;
         return handlerInput.responseBuilder
             .addDelegateDirective(currentIntent)
@@ -35,49 +34,47 @@ const InProgressIfscCodeIntentHandler = {
 const CompletedIfscCodeIntentHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
-            handlerInput.requestEnvelope.request.intent.name === 'ifscCode'           
+            handlerInput.requestEnvelope.request.intent.name === 'ifscCode'
     },
     async handle(handlerInput) {
-        console.log("in completed intent handler");
-        // const speechText = "TEST TEST TEST";
-        // return handlerInput.responseBuilder
-        //     .speak(speechText)
-        //     .reprompt(speechText)
-        //     .withShouldEndSession(false)
-        //     .getResponse();  
-            
+
         if (!handlerInput.requestEnvelope.request.intent.slots.BANK.value) {
             return handlerInput.responseBuilder
-            .speak("Let me know which IFSC code for which bank you are looking for ?")
-            .reprompt("Let me know which IFSC code for which bank you are looking for ?")
-            .addElicitSlotDirective('BANK')
-            .getResponse();
-        } else {
-            
-            const bankName = handlerInput.requestEnvelope.request.intent.slots.BANK.value;
-            if (!handlerInput.requestEnvelope.request.intent.slots.BRANCH.value) {
-                return handlerInput.responseBuilder
-                .speak(`Which Branch of ${bankName} are you looking for ?`)
-                .reprompt(`Which Branch of ${bankName} are you looking for ?`)
-                .addElicitSlotDirective('BRANCH')
+                .speak("Let me know which IFSC code for which bank are you looking for ?")
+                .reprompt("Let me know which IFSC code for which bank are you looking for ?")
+                .addElicitSlotDirective('BANK')
                 .getResponse();
-            } else {
-                const branch = handlerInput.requestEnvelope.request.intent.slots.BRANCH.value;
-                console.log('-- the params ---', bankName, branch);
-                const bankDetails = await getBankDetails(bankName, branch);
+        } else {
+
+            const bankName = handlerInput.requestEnvelope.request.intent.slots.BANK.value;
+            const branch = handlerInput.requestEnvelope.request.intent.slots.BRANCH.value;
+
+            // retrieve the bank details by calling the API
+            const bankDetails = await getBankDetails(bankName, branch);
+
+            console.log('--- length of the bank ---', bankDetails.banks.length);
+            if (bankDetails.banks.length > 0) {
                 console.log('-- bank details --', bankDetails);
-                const speechText = `IFSC code of the ${bankName}, ${branch} is 
+                const speechText = `IFSC code of the ${bankName}, ${branch} is
                 <break time="2s"/>
                 <emphasis level="strong"><say-as interpret-as='spell-out'>${bankDetails.banks[0].IFSC}</say-as></emphasis>.
-                <break time="2s"/>Try again for different bank.`;
+                <break time="2s"/>Try again for different bank by invoking open ifsc code finder.`;
 
                 return handlerInput.responseBuilder
                     .speak(speechText)
                     .reprompt(speechText)
                     .withShouldEndSession(true)
                     .getResponse();
+            } else {
+                const speechText = "We were not able to get the bank details. Please try again by invoking open ifsc code finder.";
+                return handlerInput.responseBuilder
+                    .speak(speechText)
+                    .reprompt(speechText)
+                    .withShouldEndSession(true)
+                    .getResponse();
             }
-        }            
+
+        }
     }
 };
 
