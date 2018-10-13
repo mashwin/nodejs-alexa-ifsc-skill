@@ -1,1 +1,1 @@
-![nodejs alexa ifsc code finder skill](https://raw.githubusercontent.com/username/projectname/branch/path/to/img.png)
+![nodejs alexa ifsc code finder skill](https://github.com/mashwin/nodejs-alexa-ifsc-skill/blob/master/nodejs-alexa-ifsc-skill.png)
