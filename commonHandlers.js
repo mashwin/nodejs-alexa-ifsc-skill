@@ -6,10 +6,12 @@ const HelpIntentHandler = {
             && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-        const speechText = "Welcome to Weather Reporter, you can say what's the forecast for Seattle";
+        let speechText = "I. F. S. C. code finder allows you to finder allows you find I. F. S. C. code for any bank in India.";
+        speechText += " Please provide valid bank name when prompted for bank name and Please provide valid branch of the bank when prompted for branch.";
+        speechText += " You can invoke the skill using Open I. F. S. C. code finder.";
         return handlerInput.responseBuilder
             .speak(speechText)
-            .withShouldEndSession(false)
+            .withShouldEndSession(true)
             .getResponse();
     }
 };
@@ -47,12 +49,12 @@ const ErrorHandler = {
         return true;
     },
     handle(handlerInput, error) {
-        console.log(JSON.stringify(error));
+        console.log("error", JSON.stringify(error));
         return handlerInput.responseBuilder
-            .speak('Sorry, I didn\'t understand. Please say again.')
-            .reprompt('Sorry, I didn\'t understand. Please say again.')
+            .speak('Sorry, I didn\'t understand. Please say that again.')
+            .reprompt('Sorry, I didn\'t understand. Please say that again.')
             .getResponse();
-    },
+    }
 };
 
 module.exports = {
