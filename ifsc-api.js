@@ -1,5 +1,6 @@
 let request = require('request');
 require('dotenv').config();
+const { arrBanks } = require('./banks');
 
 // method to retrieve lat and lng for city
 const getBankDetails = (bank, branch) => {
@@ -38,7 +39,21 @@ const getLocation = (branch) => {
     });
 }
 
+// check if bank is valid
+isValidBank = (bankName) => {
+    let flg = false;
+    for (let i = 0; i < arrBanks.length; i++) {
+        let str = arrBanks[i];
+        if (str.includes(bankName.toUpperCase())) {
+            flg = true;
+        }
+    }
+
+    return flg;
+}
+
 module.exports = {
     getBankDetails,
-    getLocation
+    getLocation,
+    isValidBank
 }

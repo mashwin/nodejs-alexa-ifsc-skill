@@ -6,12 +6,12 @@ const HelpIntentHandler = {
             && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-        let speechText = "I. F. S. C. code finder allows you to finder allows you find I. F. S. C. code for any bank in India.";
+        let speechText = "We can help you to find I. F. S. C. code for any bank in India.";
         speechText += " Please provide valid bank name when prompted for bank name and Please provide valid branch of the bank when prompted for branch.";
-        speechText += " You can invoke the skill using Open I. F. S. C. code finder.";
+        speechText += " Say Get Codes to get started. To exit the skill say Stop.";
         return handlerInput.responseBuilder
             .speak(speechText)
-            .withShouldEndSession(true)
+            .withShouldEndSession(false)
             .getResponse();
     }
 };
